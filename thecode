@@ -1,0 +1,59 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time
+import random
+
+# Profile directories enter links to Chrome profiles on your Disk
+profiles = [
+    "",""
+]
+
+# Shuffle the profiles list for randomness
+random.shuffle(profiles)
+
+# Predefined messages - enter list of messages
+messages = ["",""
+]
+
+# Predefined intervals between actions for randomness
+intervals = [34, 125, 289]
+
+def send_message(driver, channel_url, message):
+    driver.get(channel_url)
+    driver.implicitly_wait(10)  # Wait for elements to load
+
+    try:
+        # Find the message input field. The class name provided might be incorrect as Discord often changes its classes. 
+        # You may need to inspect the element and update the class name accordingly.
+        element = driver.find_element(By.XPATH, "//div[@role='textbox']")
+        element.send_keys(message)
+        time.sleep(2)  # Wait a bit before sending the message
+        element.send_keys(Keys.ENTER)
+    except Exception as e:
+        print(f"An error occurred while sending a message to {channel_url}: {e}")
+
+def run_bot():
+    for profile in profiles:
+        options = webdriver.ChromeOptions()
+        options.add_argument(f"user-data-dir={profile}")
+        driver = webdriver.Chrome(options=options)
+
+        # First channel - enter link to the specific channel - must be logged in
+        first_channel_url = ""
+        message_to_first_channel = random.choice(messages)
+        send_message(driver, first_channel_url, message_to_first_channel)
+        time.sleep(2)
+
+        # Second channel enter link to the specific channel - must be logged in
+        second_channel_url = ""
+        message_to_second_channel = ""  # Your specific message for the second channel
+        send_message(driver, second_channel_url, message_to_second_channel)
+        time.sleep(2)
+
+        # Quit the driver after completing tasks in both channels
+        driver.quit()
+
+while True:
+    run_bot()
+    time.sleep(1132)
